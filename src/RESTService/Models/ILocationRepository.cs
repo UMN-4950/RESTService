@@ -17,6 +17,6 @@ namespace RESTService.Models
         IEnumerable<Location> GetAll();
         void Update(Location locatoin);
         Location Find(string key);
-        bool Remove(string key);
+        Location Remove(string key);
     }
 }
