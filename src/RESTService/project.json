@@ -1,9 +1,6 @@
-﻿{
+{
   "dependencies": {
-    "Microsoft.NETCore.App": {
-      "version": "1.0.1",
-      "type": "platform"
-    },
+    "GoogleMapsApi": "0.59.0",
     "Microsoft.ApplicationInsights.AspNetCore": "1.0.0",
     "Microsoft.AspNetCore.Mvc": "1.0.1",
     "Microsoft.AspNetCore.Routing": "1.0.1",
@@ -23,23 +20,12 @@
   },
 
   "frameworks": {
-    "netcoreapp1.0": {
-      "imports": [
-        "dotnet5.6",
-        "portable-net45+win8"
-      ]
-    }
+    "net452": { }
   },
 
   "buildOptions": {
     "emitEntryPoint": true,
     "preserveCompilationContext": true
-  },
-
-  "runtimeOptions": {
-    "configProperties": {
-      "System.GC.Server": true
-    }
   },
 
   "publishOptions": {

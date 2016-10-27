@@ -6,7 +6,7 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>76626052-482a-4da5-ad01-87e30e81096f</ProjectGuid>
+    <ProjectGuid>e5303f7f-2c9d-47bf-b3d5-e4042c2e1efa</ProjectGuid>
     <RootNamespace>RESTService</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
@@ -14,7 +14,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
-    <ApplicationInsightsResourceId>/subscriptions/e1a23a87-b6ef-439b-848b-7ddb10c4a284/resourcegroups/Default-ApplicationInsights-CentralUS/providers/microsoft.insights/components/RESTService</ApplicationInsightsResourceId>
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet.Web\Microsoft.DotNet.Web.targets" Condition="'$(VSToolsPath)' != ''" />
 </Project>

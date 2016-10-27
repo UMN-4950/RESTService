@@ -105,7 +105,7 @@ namespace RESTService.Controllers
             }
 
             LocationItems.Remove(id);
-            
+
             return new NoContentResult();
         }
     }
