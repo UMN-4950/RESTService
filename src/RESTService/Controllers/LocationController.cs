@@ -19,6 +19,8 @@ namespace RESTService.Controllers
         [HttpGet]
         public IEnumerable<Location> GetAll()
         {
+            Console.WriteLine("this is a test");
+            string t = AppDomain.CurrentDomain.GetData("APPBASE").ToString();
             return LocationItems.GetAll();
         }
 
