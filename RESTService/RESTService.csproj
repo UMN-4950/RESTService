@@ -141,6 +141,10 @@
     <Compile Include="Migrations\201611050905259_Added User-Event models.Designer.cs">
       <DependentUpon>201611050905259_Added User-Event models.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611222120057_Removed Evenet pre-fix from Event Table.cs" />
+    <Compile Include="Migrations\201611222120057_Removed Evenet pre-fix from Event Table.Designer.cs">
+      <DependentUpon>201611222120057_Removed Evenet pre-fix from Event Table.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\Location.cs" />
@@ -167,6 +171,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611050905259_Added User-Event models.resx">
       <DependentUpon>201611050905259_Added User-Event models.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611222120057_Removed Evenet pre-fix from Event Table.resx">
+      <DependentUpon>201611222120057_Removed Evenet pre-fix from Event Table.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
