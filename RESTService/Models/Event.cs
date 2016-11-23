@@ -15,12 +15,12 @@ namespace RESTService.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        public string EventName { get; set; }
-        public string EventInfo { get; set; }
-        public DateTime EventStartDate { get; set; }
-        public DateTime EventEndDate { get; set; }
-        public List<User> EventAttendance { get; set; }
+        public string Name { get; set; }
+        public string Info { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public List<User> Attendance { get; set; }
         [Required]
-        public List<Location> EventLocations { get; set; }
+        public List<Location> Locations { get; set; }
     }
 }

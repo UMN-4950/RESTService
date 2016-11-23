@@ -1,5 +1,10 @@
 # web config - it's been shared on Slack
 RESTService/Web.config
+RESTService/Web.Debug.config
+RESTService/Web.Release.config
+
+# local db files
+RESTService/App_Data/*
 
 _build/
 
