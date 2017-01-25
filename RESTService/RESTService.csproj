@@ -145,6 +145,14 @@
     <Compile Include="Migrations\201611222120057_Removed Evenet pre-fix from Event Table.Designer.cs">
       <DependentUpon>201611222120057_Removed Evenet pre-fix from Event Table.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701252011512_updated the user info.cs" />
+    <Compile Include="Migrations\201701252011512_updated the user info.Designer.cs">
+      <DependentUpon>201701252011512_updated the user info.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701252025480_added google id to user object.cs" />
+    <Compile Include="Migrations\201701252025480_added google id to user object.Designer.cs">
+      <DependentUpon>201701252025480_added google id to user object.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\Location.cs" />
@@ -175,6 +183,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611222120057_Removed Evenet pre-fix from Event Table.resx">
       <DependentUpon>201611222120057_Removed Evenet pre-fix from Event Table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701252011512_updated the user info.resx">
+      <DependentUpon>201701252011512_updated the user info.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701252025480_added google id to user object.resx">
+      <DependentUpon>201701252025480_added google id to user object.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
