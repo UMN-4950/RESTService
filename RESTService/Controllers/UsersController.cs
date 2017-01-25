@@ -23,6 +23,30 @@ namespace RESTService.Controllers
             return db.Users;
         }
 
+        // GET: api/Users?gid=13j32jld8
+        [HttpGet]
+        public async Task<IHttpActionResult> GetUserByGId(string gid)
+        {
+            var user = await db.Users.Where(x => x.GoogleId == gid).ToListAsync();
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
+
+        // GET: api/Users?email=13j32jld8
+        [HttpGet]
+        public async Task<IHttpActionResult> GetUserByEmail(string email)
+        {
+            var user = await db.Users.Where(x => x.Email == email).ToListAsync();
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
+
         // GET: api/Users/5
         [ResponseType(typeof(User))]
         public async Task<IHttpActionResult> GetUser(int id)
