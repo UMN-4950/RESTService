@@ -12,44 +12,44 @@ using RESTService.Models;
 
 namespace RESTService.Controllers
 {
-    public class UsersController : ApiController
+    public class NotificationsController : ApiController
     {
         private RESTServiceContext db = new RESTServiceContext();
 
-        // GET: api/Users
-        public IQueryable<User> GetUsers()
+        // GET: api/Notifications
+        public IQueryable<Notification> GetNotifications()
         {
-            return db.Users;
+            return db.Notifications;
         }
 
-        // GET: api/Users/5
-        [ResponseType(typeof(User))]
-        public IHttpActionResult GetUser(int id)
+        // GET: api/Notifications/5
+        [ResponseType(typeof(Notification))]
+        public IHttpActionResult GetNotification(int id)
         {
-            User user = db.Users.Find(id);
-            if (user == null)
+            Notification notification = db.Notifications.Find(id);
+            if (notification == null)
             {
                 return NotFound();
             }
 
-            return Ok(user);
+            return Ok(notification);
         }
 
-        // PUT: api/Users/5
+        // PUT: api/Notifications/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutUser(int id, User user)
+        public IHttpActionResult PutNotification(int id, Notification notification)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != user.UserId)
+            if (id != notification.NotificationId)
             {
                 return BadRequest();
             }
 
-            db.Entry(user).State = EntityState.Modified;
+            db.Entry(notification).State = EntityState.Modified;
 
             try
             {
@@ -57,7 +57,7 @@ namespace RESTService.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!NotificationExists(id))
                 {
                     return NotFound();
                 }
@@ -70,50 +70,35 @@ namespace RESTService.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Users
-        [ResponseType(typeof(User))]
-        public IHttpActionResult PostUser(User user)
+        // POST: api/Notifications
+        [ResponseType(typeof(Notification))]
+        public IHttpActionResult PostNotification(Notification notification)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Users.Add(user);
+            db.Notifications.Add(notification);
+            db.SaveChanges();
 
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                if (UserExists(user.UserId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtRoute("DefaultApi", new { id = user.UserId }, user);
+            return CreatedAtRoute("DefaultApi", new { id = notification.NotificationId }, notification);
         }
 
-        // DELETE: api/Users/5
-        [ResponseType(typeof(User))]
-        public IHttpActionResult DeleteUser(int id)
+        // DELETE: api/Notifications/5
+        [ResponseType(typeof(Notification))]
+        public IHttpActionResult DeleteNotification(int id)
         {
-            User user = db.Users.Find(id);
-            if (user == null)
+            Notification notification = db.Notifications.Find(id);
+            if (notification == null)
             {
                 return NotFound();
             }
 
-            db.Users.Remove(user);
+            db.Notifications.Remove(notification);
             db.SaveChanges();
 
-            return Ok(user);
+            return Ok(notification);
         }
 
         protected override void Dispose(bool disposing)
@@ -125,9 +110,9 @@ namespace RESTService.Controllers
             base.Dispose(disposing);
         }
 
-        private bool UserExists(int id)
+        private bool NotificationExists(int id)
         {
-            return db.Users.Count(e => e.UserId == id) > 0;
+            return db.Notifications.Count(e => e.NotificationId == id) > 0;
         }
     }
 }

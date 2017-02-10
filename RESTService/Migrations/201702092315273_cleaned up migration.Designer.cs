@@ -7,13 +7,13 @@ namespace RESTService.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Init : IMigrationMetadata
+    public sealed partial class cleanedupmigration : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Init));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(cleanedupmigration));
         
         string IMigrationMetadata.Id
         {
-            get { return "201611050749019_Init"; }
+            get { return "201702092315273_cleaned up migration"; }
         }
         
         string IMigrationMetadata.Source

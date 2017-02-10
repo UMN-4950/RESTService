@@ -25,6 +25,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <ApplicationInsightsResourceId>/subscriptions/e1a23a87-b6ef-439b-848b-7ddb10c4a284/resourcegroups/Default-ApplicationInsights-CentralUS/providers/microsoft.insights/components/RESTService</ApplicationInsightsResourceId>
+    <ApplicationInsightsAnnotationResourceId>/subscriptions/e1a23a87-b6ef-439b-848b-7ddb10c4a284/resourcegroups/Default-ApplicationInsights-CentralUS/providers/microsoft.insights/components/RESTService</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -118,10 +119,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\BPOCDB.mdf" />
-    <Content Include="App_Data\BPOCDB_log.ldf">
-      <DependentUpon>BPOCDB.mdf</DependentUpon>
-    </Content>
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -129,33 +126,19 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\EventsController.cs" />
     <Compile Include="Controllers\LocationsController.cs" />
+    <Compile Include="Controllers\NotificationsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201611050749019_Init.cs" />
-    <Compile Include="Migrations\201611050749019_Init.Designer.cs">
-      <DependentUpon>201611050749019_Init.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611050905259_Added User-Event models.cs" />
-    <Compile Include="Migrations\201611050905259_Added User-Event models.Designer.cs">
-      <DependentUpon>201611050905259_Added User-Event models.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611222120057_Removed Evenet pre-fix from Event Table.cs" />
-    <Compile Include="Migrations\201611222120057_Removed Evenet pre-fix from Event Table.Designer.cs">
-      <DependentUpon>201611222120057_Removed Evenet pre-fix from Event Table.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201701252011512_updated the user info.cs" />
-    <Compile Include="Migrations\201701252011512_updated the user info.Designer.cs">
-      <DependentUpon>201701252011512_updated the user info.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201701252025480_added google id to user object.cs" />
-    <Compile Include="Migrations\201701252025480_added google id to user object.Designer.cs">
-      <DependentUpon>201701252025480_added google id to user object.cs</DependentUpon>
+    <Compile Include="Migrations\201702092315273_cleaned up migration.cs" />
+    <Compile Include="Migrations\201702092315273_cleaned up migration.Designer.cs">
+      <DependentUpon>201702092315273_cleaned up migration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\Location.cs" />
+    <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\RESTServiceContext.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -167,34 +150,18 @@
     </Content>
     <Content Include="Service References\Application Insights\ConnectedService.json" />
     <None Include="Properties\PublishProfiles\BPOCRESTService - Web Deploy.pubxml" />
-    <None Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201611050749019_Init.resx">
-      <DependentUpon>201611050749019_Init.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611050905259_Added User-Event models.resx">
-      <DependentUpon>201611050905259_Added User-Event models.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611222120057_Removed Evenet pre-fix from Event Table.resx">
-      <DependentUpon>201611222120057_Removed Evenet pre-fix from Event Table.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201701252011512_updated the user info.resx">
-      <DependentUpon>201701252011512_updated the user info.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201701252025480_added google id to user object.resx">
-      <DependentUpon>201701252025480_added google id to user object.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201702092315273_cleaned up migration.resx">
+      <DependentUpon>201702092315273_cleaned up migration.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

@@ -6,7 +6,6 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using RESTService.Models;
@@ -25,9 +24,9 @@ namespace RESTService.Controllers
 
         // GET: api/Events/5
         [ResponseType(typeof(Event))]
-        public async Task<IHttpActionResult> GetEvent(int id)
+        public IHttpActionResult GetEvent(int id)
         {
-            Event @event = await db.Events.FindAsync(id);
+            Event @event = db.Events.Find(id);
             if (@event == null)
             {
                 return NotFound();
@@ -38,14 +37,14 @@ namespace RESTService.Controllers
 
         // PUT: api/Events/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutEvent(int id, Event @event)
+        public IHttpActionResult PutEvent(int id, Event @event)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != @event.Id)
+            if (id != @event.EventId)
             {
                 return BadRequest();
             }
@@ -54,7 +53,7 @@ namespace RESTService.Controllers
 
             try
             {
-                await db.SaveChangesAsync();
+                db.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -73,7 +72,7 @@ namespace RESTService.Controllers
 
         // POST: api/Events
         [ResponseType(typeof(Event))]
-        public async Task<IHttpActionResult> PostEvent(Event @event)
+        public IHttpActionResult PostEvent(Event @event)
         {
             if (!ModelState.IsValid)
             {
@@ -81,23 +80,23 @@ namespace RESTService.Controllers
             }
 
             db.Events.Add(@event);
-            await db.SaveChangesAsync();
+            db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = @event.Id }, @event);
+            return CreatedAtRoute("DefaultApi", new { id = @event.EventId }, @event);
         }
 
         // DELETE: api/Events/5
         [ResponseType(typeof(Event))]
-        public async Task<IHttpActionResult> DeleteEvent(int id)
+        public IHttpActionResult DeleteEvent(int id)
         {
-            Event @event = await db.Events.FindAsync(id);
+            Event @event = db.Events.Find(id);
             if (@event == null)
             {
                 return NotFound();
             }
 
             db.Events.Remove(@event);
-            await db.SaveChangesAsync();
+            db.SaveChanges();
 
             return Ok(@event);
         }
@@ -113,7 +112,7 @@ namespace RESTService.Controllers
 
         private bool EventExists(int id)
         {
-            return db.Events.Count(e => e.Id == id) > 0;
+            return db.Events.Count(e => e.EventId == id) > 0;
         }
     }
 }
