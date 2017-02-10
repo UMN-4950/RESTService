@@ -18,9 +18,9 @@ namespace RESTService.Controllers
         private RESTServiceContext db = new RESTServiceContext();
 
         // GET: api/Notifications
-        public IQueryable<Notification> GetNotifications()
+        public IEnumerable<Notification> GetNotifications()
         {
-            return db.Notifications;
+            return db.Notifications.ToList<Notification>();
         }
 
         // GET: api/Notifications/5

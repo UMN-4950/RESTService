@@ -18,9 +18,9 @@ namespace RESTService.Controllers
         private RESTServiceContext db = new RESTServiceContext();
 
         // GET: api/Events
-        public IQueryable<Event> GetEvents()
+        public IEnumerable<Event> GetEvents()
         {
-            return db.Events;
+            return db.Events.ToList<Event>();
         }
 
         // GET: api/Events/5
