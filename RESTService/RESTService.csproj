@@ -132,17 +132,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201702092315273_cleaned up migration.cs" />
-    <Compile Include="Migrations\201702092315273_cleaned up migration.Designer.cs">
-      <DependentUpon>201702092315273_cleaned up migration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201702100220543_friend list.cs" />
-    <Compile Include="Migrations\201702100220543_friend list.Designer.cs">
-      <DependentUpon>201702100220543_friend list.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201702100249403_location list.cs" />
-    <Compile Include="Migrations\201702100249403_location list.Designer.cs">
-      <DependentUpon>201702100249403_location list.cs</DependentUpon>
+    <Compile Include="Migrations\201702100348171_from the top.cs" />
+    <Compile Include="Migrations\201702100348171_from the top.Designer.cs">
+      <DependentUpon>201702100348171_from the top.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Event.cs" />
@@ -168,14 +160,8 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201702092315273_cleaned up migration.resx">
-      <DependentUpon>201702092315273_cleaned up migration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201702100220543_friend list.resx">
-      <DependentUpon>201702100220543_friend list.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201702100249403_location list.resx">
-      <DependentUpon>201702100249403_location list.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201702100348171_from the top.resx">
+      <DependentUpon>201702100348171_from the top.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

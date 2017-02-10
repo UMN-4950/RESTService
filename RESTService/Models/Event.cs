@@ -5,8 +5,7 @@ namespace RESTService.Models
 {
     public class Event
     {
-        [Key]
-        public int EventId { get; set; }
+        public int Id { get; set; }
         [Required]
         public string Name { get; set; }
         public string Info { get; set; }

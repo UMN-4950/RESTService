@@ -6,6 +6,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using RESTService.Models;
@@ -24,9 +25,9 @@ namespace RESTService.Controllers
 
         // GET: api/Notifications/5
         [ResponseType(typeof(Notification))]
-        public IHttpActionResult GetNotification(int id)
+        public async Task<IHttpActionResult> GetNotification(int id)
         {
-            Notification notification = db.Notifications.Find(id);
+            Notification notification = await db.Notifications.FindAsync(id);
             if (notification == null)
             {
                 return NotFound();
@@ -37,14 +38,14 @@ namespace RESTService.Controllers
 
         // PUT: api/Notifications/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutNotification(int id, Notification notification)
+        public async Task<IHttpActionResult> PutNotification(int id, Notification notification)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != notification.NotificationId)
+            if (id != notification.Id)
             {
                 return BadRequest();
             }
@@ -53,7 +54,7 @@ namespace RESTService.Controllers
 
             try
             {
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -72,7 +73,7 @@ namespace RESTService.Controllers
 
         // POST: api/Notifications
         [ResponseType(typeof(Notification))]
-        public IHttpActionResult PostNotification(Notification notification)
+        public async Task<IHttpActionResult> PostNotification(Notification notification)
         {
             if (!ModelState.IsValid)
             {
@@ -80,23 +81,23 @@ namespace RESTService.Controllers
             }
 
             db.Notifications.Add(notification);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = notification.NotificationId }, notification);
+            return CreatedAtRoute("DefaultApi", new { id = notification.Id }, notification);
         }
 
         // DELETE: api/Notifications/5
         [ResponseType(typeof(Notification))]
-        public IHttpActionResult DeleteNotification(int id)
+        public async Task<IHttpActionResult> DeleteNotification(int id)
         {
-            Notification notification = db.Notifications.Find(id);
+            Notification notification = await db.Notifications.FindAsync(id);
             if (notification == null)
             {
                 return NotFound();
             }
 
             db.Notifications.Remove(notification);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             return Ok(notification);
         }
@@ -112,7 +113,7 @@ namespace RESTService.Controllers
 
         private bool NotificationExists(int id)
         {
-            return db.Notifications.Count(e => e.NotificationId == id) > 0;
+            return db.Notifications.Count(e => e.Id == id) > 0;
         }
     }
 }

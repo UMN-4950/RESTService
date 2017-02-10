@@ -6,6 +6,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using RESTService.Models;
@@ -24,9 +25,9 @@ namespace RESTService.Controllers
 
         // GET: api/Friends/5
         [ResponseType(typeof(Friend))]
-        public IHttpActionResult GetFriend(int id)
+        public async Task<IHttpActionResult> GetFriend(int id)
         {
-            Friend friend = db.Friends.Find(id);
+            Friend friend = await db.Friends.FindAsync(id);
             if (friend == null)
             {
                 return NotFound();
@@ -37,14 +38,14 @@ namespace RESTService.Controllers
 
         // PUT: api/Friends/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutFriend(int id, Friend friend)
+        public async Task<IHttpActionResult> PutFriend(int id, Friend friend)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != friend.FriendId)
+            if (id != friend.Id)
             {
                 return BadRequest();
             }
@@ -53,7 +54,7 @@ namespace RESTService.Controllers
 
             try
             {
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -72,7 +73,7 @@ namespace RESTService.Controllers
 
         // POST: api/Friends
         [ResponseType(typeof(Friend))]
-        public IHttpActionResult PostFriend(Friend friend)
+        public async Task<IHttpActionResult> PostFriend(Friend friend)
         {
             if (!ModelState.IsValid)
             {
@@ -80,23 +81,23 @@ namespace RESTService.Controllers
             }
 
             db.Friends.Add(friend);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = friend.FriendId }, friend);
+            return CreatedAtRoute("DefaultApi", new { id = friend.Id }, friend);
         }
 
         // DELETE: api/Friends/5
         [ResponseType(typeof(Friend))]
-        public IHttpActionResult DeleteFriend(int id)
+        public async Task<IHttpActionResult> DeleteFriend(int id)
         {
-            Friend friend = db.Friends.Find(id);
+            Friend friend = await db.Friends.FindAsync(id);
             if (friend == null)
             {
                 return NotFound();
             }
 
             db.Friends.Remove(friend);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             return Ok(friend);
         }
@@ -112,7 +113,7 @@ namespace RESTService.Controllers
 
         private bool FriendExists(int id)
         {
-            return db.Friends.Count(e => e.FriendId == id) > 0;
+            return db.Friends.Count(e => e.Id == id) > 0;
         }
     }
 }

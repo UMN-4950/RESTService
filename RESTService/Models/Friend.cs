@@ -1,9 +1,10 @@
-﻿
+﻿using System.ComponentModel.DataAnnotations;
+
 namespace RESTService.Models
 {
     public class Friend
     {
-        public int FriendId { get; set; }
+        public int Id { get; set; }
 
         // ForeignKey
         public int UserId { get; set; }

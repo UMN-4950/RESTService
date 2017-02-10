@@ -6,8 +6,7 @@ namespace RESTService.Models
 {
     public class Location
     {
-        [Key]
-        public int LocationId { get; set; }
+        public int Id { get; set; }
         [Required]
         public double Latitude { get; set; }
         [Required]

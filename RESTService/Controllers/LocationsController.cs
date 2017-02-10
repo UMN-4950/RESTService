@@ -6,6 +6,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using RESTService.Models;
@@ -24,9 +25,9 @@ namespace RESTService.Controllers
 
         // GET: api/Locations/5
         [ResponseType(typeof(Location))]
-        public IHttpActionResult GetLocation(int id)
+        public async Task<IHttpActionResult> GetLocation(int id)
         {
-            Location location = db.Locations.Find(id);
+            Location location = await db.Locations.FindAsync(id);
             if (location == null)
             {
                 return NotFound();
@@ -37,14 +38,14 @@ namespace RESTService.Controllers
 
         // PUT: api/Locations/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutLocation(int id, Location location)
+        public async Task<IHttpActionResult> PutLocation(int id, Location location)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != location.LocationId)
+            if (id != location.Id)
             {
                 return BadRequest();
             }
@@ -53,7 +54,7 @@ namespace RESTService.Controllers
 
             try
             {
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -72,7 +73,7 @@ namespace RESTService.Controllers
 
         // POST: api/Locations
         [ResponseType(typeof(Location))]
-        public IHttpActionResult PostLocation(Location location)
+        public async Task<IHttpActionResult> PostLocation(Location location)
         {
             if (!ModelState.IsValid)
             {
@@ -80,38 +81,23 @@ namespace RESTService.Controllers
             }
 
             db.Locations.Add(location);
+            await db.SaveChangesAsync();
 
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                if (LocationExists(location.LocationId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtRoute("DefaultApi", new { id = location.LocationId }, location);
+            return CreatedAtRoute("DefaultApi", new { id = location.Id }, location);
         }
 
         // DELETE: api/Locations/5
         [ResponseType(typeof(Location))]
-        public IHttpActionResult DeleteLocation(int id)
+        public async Task<IHttpActionResult> DeleteLocation(int id)
         {
-            Location location = db.Locations.Find(id);
+            Location location = await db.Locations.FindAsync(id);
             if (location == null)
             {
                 return NotFound();
             }
 
             db.Locations.Remove(location);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
 
             return Ok(location);
         }
@@ -127,7 +113,7 @@ namespace RESTService.Controllers
 
         private bool LocationExists(int id)
         {
-            return db.Locations.Count(e => e.LocationId == id) > 0;
+            return db.Locations.Count(e => e.Id == id) > 0;
         }
     }
 }

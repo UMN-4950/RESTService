@@ -5,7 +5,7 @@ namespace RESTService.Models
 {
     public class User
     {
-        public int UserId { get; set; }
+        public int Id { get; set; }
         [Required]
         public string GoogleId { get; set; }
         [Required]
