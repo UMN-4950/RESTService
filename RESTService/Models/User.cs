@@ -13,10 +13,10 @@ namespace RESTService.Models
         public string GivenName { get; set; }
         public string FamilyName { get; set; }
         
-        public ICollection<Location> Locations { get; set; }
+        public virtual List<Location> Locations { get; set; }
 
-        public virtual ICollection<Notification> Notifications { get; set; }
+        public virtual List<Notification> Notifications { get; set; }
 
-        public virtual ICollection<Friend> Friends { get; set; }
+        public virtual List<Friend> Friends { get; set; }
     }
 }

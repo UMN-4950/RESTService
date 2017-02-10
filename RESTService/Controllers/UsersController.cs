@@ -18,9 +18,9 @@ namespace RESTService.Controllers
         private RESTServiceContext db = new RESTServiceContext();
 
         // GET: api/Users
-        public IQueryable<User> GetUsers()
+        public IEnumerable<User> GetUsers()
         {
-            return db.Users;
+            return db.Users.ToList<User>();
         }
 
         // GET: api/Users/5
