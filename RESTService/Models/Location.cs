@@ -7,7 +7,6 @@ namespace RESTService.Models
     public class Location
     {
         [Key]
-        [ForeignKey("User")]
         public int LocationId { get; set; }
         [Required]
         public double Latitude { get; set; }
@@ -16,6 +15,7 @@ namespace RESTService.Models
         public DateTime Time { get; set; }
 
         // ForeignKey
+        public int UserId { get; set; }
         public User User { get; set; }
     }
 }

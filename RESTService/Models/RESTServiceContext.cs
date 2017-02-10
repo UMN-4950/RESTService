@@ -12,5 +12,6 @@ namespace RESTService.Models
         public DbSet<User> Users { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Friend> Friends { get; set; }
     }
 }
