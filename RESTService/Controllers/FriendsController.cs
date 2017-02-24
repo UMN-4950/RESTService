@@ -23,6 +23,20 @@ namespace RESTService.Controllers
             return db.Friends.ToList<Friend>();
         }
 
+        [Route("api/friends/distance")]
+        public HttpResponseMessage GetFriendsTemp()
+        {
+            List<dynamic> data = new List<dynamic>();
+            data.Add(new { name = "Jack", distance = 1.3, id = 1 });
+
+            data.Add(new { name = "Marcio", distance = 0.3, id = 2 });
+
+            data.Add(new { name = "Sophita", distance = 2.3, id = 3 });
+            return Request.CreateResponse(HttpStatusCode.OK, data);
+
+
+        }
+
         // GET: api/Friends/5
         [ResponseType(typeof(Friend))]
         public async Task<IHttpActionResult> GetFriend(int id)
