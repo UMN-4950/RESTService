@@ -86,6 +86,26 @@ namespace RESTService.Controllers
             return CreatedAtRoute("DefaultApi", new { id = user.Id }, user);
         }
 
+        [ResponseType(typeof(Location))]
+        [Route("api/users/userlocation")]
+        public async Task<IHttpActionResult> PostUserLocation(Location location)
+        {
+            //verify our in data
+            //look up user
+            //authenticated
+            //update location
+            //return status
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (location != null && location.UserId <=0) return BadRequest(ModelState);
+
+            //db.Locations.Add(location);
+            return Ok();
+           // return CreatedAtRoute("DefaultApi", StatusCode.Ok);
+        }
+
         // DELETE: api/Users/5
         [ResponseType(typeof(User))]
         public async Task<IHttpActionResult> DeleteUser(int id)
