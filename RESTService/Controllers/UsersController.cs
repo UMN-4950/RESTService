@@ -36,6 +36,57 @@ namespace RESTService.Controllers
             return Ok(user);
         }
 
+        [Route("api/users/getid/{googleID}")]
+        public async Task<IHttpActionResult> GetID(string googleID)
+        {
+            // Assumption: default value is 0
+            int id = db.Users.Where(x => x.GoogleId == googleID).Select(s => s.Id).SingleOrDefault();
+            return Ok(id);
+        }
+
+        [Route("api/users/namesearch/{name}")]
+        public async Task<IHttpActionResult> NameSearch(int userID, string queryString)
+        {
+            //  TODO: Remove userID and instead use cookie
+
+            // Split input search string and search on all passed names
+            queryString = queryString.ToLower();
+            var searchTokens = queryString.Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
+            var matches = new List<User>();
+            foreach (var searchTerm in searchTokens)
+            {
+                List<User> currentMatches = db.Users.Where(
+                    x => x.GivenName.ToLower().Contains(searchTerm) ||
+                         x.FamilyName.ToLower().Contains(searchTerm)
+                ).ToList();
+
+                matches.AddRange(currentMatches);
+            }
+
+            // Retrieve querying user's friend list
+            // TODO: Only retrieve friends list of current user. How? And below error not handled
+            User currentUser = db.Users.Where(x => x.Id == userID).Single(); // Throws an error if user not found
+            List<Friend> friends = currentUser.Friends;
+
+            // Iterate through results, add friend status, and then construct reply object
+            var reply = new List<Tuple<int, String, String>>(); // id, name, friendStatus
+            foreach(User u in matches)
+            {
+                // Retrieve friend status
+                String status = friends.Where(x => x.UserId == u.Id).Select(s => s.Status).SingleOrDefault();
+                if (status == null){ status = "NotFriend"; }
+
+                String name = u.GivenName + " " + u.FamilyName;
+
+                reply.Add(new Tuple<int, String, String>(u.Id, name, status));
+            }
+
+            return Ok(reply);
+
+            // TODO: Limit function to only return first 5, and then wait for if user requests more
+ 
+        }
+
         // PUT: api/Users/5
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutUser(int id, User user)
