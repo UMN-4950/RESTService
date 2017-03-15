@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using RESTService.Models;
+using System.Collections.Specialized;
+using System.Net.Http.Headers;
 
 namespace RESTService.Controllers
 {
@@ -42,6 +44,50 @@ namespace RESTService.Controllers
             // Assumption: default value is 0
             int id = db.Users.Where(x => x.GoogleId == googleID).Select(s => s.Id).SingleOrDefault();
             return Ok(id);
+        }
+
+        [Route("api/users/dropcookie/{userID}")]
+        public HttpResponseMessage DropCookie(string userID)
+        {
+            //validate userId
+
+            var response = Request.CreateResponse(HttpStatusCode.Created);
+
+            var nv = new NameValueCollection();
+            //set userid
+            nv["uid"] = userID;
+            //should generate a token for that user/session that is encrypted and known only on server.
+            nv["token"] = "1234567890";
+            var cookie = new CookieHeaderValue("bpoc", nv);
+            cookie.Path = "/";
+            //cookie.Secure = true;
+            cookie.Domain = Request.RequestUri.Host.Contains("localhost") ? null : Request.RequestUri.Host;
+            response.Headers.AddCookies(new CookieHeaderValue[] { cookie });
+
+            return response;
+        }
+
+        [Route("api/users/checkcookie")]
+        public HttpResponseMessage CheckCookie()
+        {
+        
+            //all this code should really be in a shared class or at the least a baseController that others inherit from
+            //could use a  messageHandler
+
+            string userId = "";
+            string sessionToken = "";
+         
+
+            CookieHeaderValue cookie = Request.Headers.GetCookies("bpoc").FirstOrDefault();
+            if (cookie != null)
+            {
+                CookieState cookieState = cookie["bpoc"];
+
+                userId = cookieState["uid"];
+                //validate token per userId
+                sessionToken = cookieState["token"];
+               }
+            return Request.CreateResponse(HttpStatusCode.OK,sessionToken);
         }
 
         [Route("api/users/namesearch/{name}")]
