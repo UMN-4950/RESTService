@@ -90,7 +90,7 @@ namespace RESTService.Controllers
             return Request.CreateResponse(HttpStatusCode.OK,sessionToken);
         }
 
-        [Route("api/users/namesearch/{name}")]
+        [Route("api/users/namesearch/{userID}/{queryString}")]
         public async Task<IHttpActionResult> NameSearch(int userID, string queryString)
         {
             //  TODO: Remove userID and instead use cookie
