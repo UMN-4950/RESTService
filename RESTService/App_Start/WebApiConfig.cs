@@ -19,15 +19,6 @@ namespace RESTService
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
-
-            /*
-            config.Routes.MapHttpRoute(
-            name: "",
-            routeTemplate: "api/{controller}/{action}/{name}",
-            defaults: null,
-            constraints: new { name = @"^[a-z]+$" }
-        );
-        */
         }
     }
 }
