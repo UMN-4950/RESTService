@@ -44,7 +44,7 @@ namespace RESTService.Controllers
             return Ok(id);
         }
 
-        [Route("api/users/namesearch/{name}")]
+        [Route("api/users/namesearch/{userID}/{queryString}")]
         public async Task<IHttpActionResult> NameSearch(int userID, string queryString)
         {
             //  TODO: Remove userID and instead use cookie
@@ -61,6 +61,12 @@ namespace RESTService.Controllers
                 ).ToList();
 
                 matches.AddRange(currentMatches);
+            }
+
+            // Return error if no matches found
+            if (!matches.Any())
+            {
+                return NotFound();
             }
 
             // Retrieve querying user's friend list
@@ -84,7 +90,6 @@ namespace RESTService.Controllers
             return Ok(reply);
 
             // TODO: Limit function to only return first 5, and then wait for if user requests more
- 
         }
 
         // PUT: api/Users/5

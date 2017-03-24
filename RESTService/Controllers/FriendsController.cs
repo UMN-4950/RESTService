@@ -50,6 +50,42 @@ namespace RESTService.Controllers
             return Ok(friend);
         }
 
+        [Route("api/friends/getfriends/{id}")]
+        public async Task<IHttpActionResult> GetFriends(int id)
+        {
+            List<Friend> friends = db.Friends.Where(
+                x => x.UserId == id
+            ).ToList();
+            // Return picture, name, and distance (name and distance are defaults)
+
+            if (!friends.Any())
+            {
+                return NotFound();
+            }
+
+            return Ok(friends);
+        }
+
+        /*
+        [Route("api/friends/requestfriend/{userid}/{friendid}")]
+        public async Task<IHttpActionResult> RequestFriend(int userid, int friendid)
+        {
+            User friend = db.Users.Where(
+                x => x.UserId == friendid
+            );
+
+            if (friend == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                // Create friend record and insert into database
+            }
+
+        }
+        */
+
         // PUT: api/Friends/5
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutFriend(int id, Friend friend)

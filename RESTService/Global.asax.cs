@@ -18,3 +18,14 @@ namespace RESTService
         }
     }
 }
+
+public static void RegisterRoutes(RouteCollection routes)
+{
+    routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+
+    routes.MapRoute(
+        "Parameter",
+        "{controller}/{action}/{a}/{b}/{c}",
+        new { controller = "Home", action = "ParameterTest", a = 0, b = 0, c = 0 }
+    );
+}
