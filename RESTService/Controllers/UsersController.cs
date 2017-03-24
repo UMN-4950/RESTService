@@ -19,25 +19,7 @@ namespace RESTService.Controllers
     {
         private RESTServiceContext db = new RESTServiceContext();
 
-        // GET: api/Users
-        public IEnumerable<User> GetUsers()
-        {
-            return db.Users.ToList<User>();
-        }
-
-        // GET: api/Users/5
-        [ResponseType(typeof(User))]
-        public async Task<IHttpActionResult> GetUser(int id)
-        {
-            User user = await db.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(user);
-        }
-
+        #region GoogleId-based queris
         [Route("api/users/getid/{googleID}")]
         public async Task<IHttpActionResult> GetID(string googleID)
         {
@@ -45,52 +27,35 @@ namespace RESTService.Controllers
             int id = db.Users.Where(x => x.GoogleId == googleID).Select(s => s.Id).SingleOrDefault();
             return Ok(id);
         }
+        #endregion
 
-        [Route("api/users/dropcookie/{userID}")]
-        public HttpResponseMessage DropCookie(string userID)
+        #region Location-based queries
+
+        [ResponseType(typeof(Location))]
+        [Route("api/users/userlocation")]
+        public async Task<IHttpActionResult> PostUserLocation(Location location)
         {
-            //validate userId
-
-            var response = Request.CreateResponse(HttpStatusCode.Created);
-
-            var nv = new NameValueCollection();
-            //set userid
-            nv["uid"] = userID;
-            //should generate a token for that user/session that is encrypted and known only on server.
-            nv["token"] = "1234567890";
-            var cookie = new CookieHeaderValue("bpoc", nv);
-            cookie.Path = "/";
-            //cookie.Secure = true;
-            cookie.Domain = Request.RequestUri.Host.Contains("localhost") ? null : Request.RequestUri.Host;
-            response.Headers.AddCookies(new CookieHeaderValue[] { cookie });
-
-            return response;
-        }
-
-        [Route("api/users/checkcookie")]
-        public HttpResponseMessage CheckCookie()
-        {
-        
-            //all this code should really be in a shared class or at the least a baseController that others inherit from
-            //could use a  messageHandler
-
-            string userId = "";
-            string sessionToken = "";
-         
-
-            CookieHeaderValue cookie = Request.Headers.GetCookies("bpoc").FirstOrDefault();
-            if (cookie != null)
+            //verify our in data
+            //look up user
+            //authenticated
+            //update location
+            //return status
+            if (!ModelState.IsValid)
             {
-                CookieState cookieState = cookie["bpoc"];
+                return BadRequest(ModelState);
+            }
+            if (location != null && location.UserId <= 0) return BadRequest(ModelState);
 
-                userId = cookieState["uid"];
-                //validate token per userId
-                sessionToken = cookieState["token"];
-               }
-            return Request.CreateResponse(HttpStatusCode.OK,sessionToken);
+            //db.Locations.Add(location);
+            return Ok();
+            // return CreatedAtRoute("DefaultApi", StatusCode.Ok);
         }
 
-        [Route("api/users/namesearch/{name}")]
+        #endregion
+
+        #region other queris
+
+        [Route("api/users/namesearch/{userID}/{queryString}")]
         public async Task<IHttpActionResult> NameSearch(int userID, string queryString)
         {
             //  TODO: Remove userID and instead use cookie
@@ -116,11 +81,11 @@ namespace RESTService.Controllers
 
             // Iterate through results, add friend status, and then construct reply object
             var reply = new List<Tuple<int, String, String>>(); // id, name, friendStatus
-            foreach(User u in matches)
+            foreach (User u in matches)
             {
                 // Retrieve friend status
                 String status = friends.Where(x => x.UserId == u.Id).Select(s => s.Status).SingleOrDefault();
-                if (status == null){ status = "NotFriend"; }
+                if (status == null) { status = "NotFriend"; }
 
                 String name = u.GivenName + " " + u.FamilyName;
 
@@ -133,7 +98,42 @@ namespace RESTService.Controllers
             return Ok(reply);
 
             // TODO: Limit function to only return first 5, and then wait for if user requests more
- 
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        private bool UserExists(int id)
+        {
+            return db.Users.Count(e => e.Id == id) > 0;
+        }
+        #endregion
+
+        #region BASIC QUERIES
+
+        // GET: api/Users
+        public IEnumerable<User> GetUsers()
+        {
+            return db.Users.ToList<User>();
+        }
+
+        // GET: api/Users/5
+        [ResponseType(typeof(User))]
+        public async Task<IHttpActionResult> GetUser(int id)
+        {
+            User user = await db.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
         }
 
         // PUT: api/Users/5
@@ -186,26 +186,6 @@ namespace RESTService.Controllers
             return CreatedAtRoute("DefaultApi", new { id = user.Id }, user);
         }
 
-        [ResponseType(typeof(Location))]
-        [Route("api/users/userlocation")]
-        public async Task<IHttpActionResult> PostUserLocation(Location location)
-        {
-            //verify our in data
-            //look up user
-            //authenticated
-            //update location
-            //return status
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            if (location != null && location.UserId <=0) return BadRequest(ModelState);
-
-            //db.Locations.Add(location);
-            return Ok();
-           // return CreatedAtRoute("DefaultApi", StatusCode.Ok);
-        }
-
         // DELETE: api/Users/5
         [ResponseType(typeof(User))]
         public async Task<IHttpActionResult> DeleteUser(int id)
@@ -221,19 +201,53 @@ namespace RESTService.Controllers
 
             return Ok(user);
         }
+        #endregion
 
-        protected override void Dispose(bool disposing)
+        #region COOKIE
+        [Route("api/users/dropcookie/{userID}")]
+        public HttpResponseMessage DropCookie(string userID)
         {
-            if (disposing)
+            //validate userId
+
+            var response = Request.CreateResponse(HttpStatusCode.Created);
+
+            var nv = new NameValueCollection();
+            //set userid
+            nv["uid"] = userID;
+            //should generate a token for that user/session that is encrypted and known only on server.
+            nv["token"] = "1234567890";
+            var cookie = new CookieHeaderValue("bpoc", nv);
+            cookie.Path = "/";
+            //cookie.Secure = true;
+            cookie.Domain = Request.RequestUri.Host.Contains("localhost") ? null : Request.RequestUri.Host;
+            response.Headers.AddCookies(new CookieHeaderValue[] { cookie });
+
+            return response;
+        }
+
+        [Route("api/users/checkcookie")]
+        public HttpResponseMessage CheckCookie()
+        {
+
+            //all this code should really be in a shared class or at the least a baseController that others inherit from
+            //could use a  messageHandler
+
+            string userId = "";
+            string sessionToken = "";
+
+
+            CookieHeaderValue cookie = Request.Headers.GetCookies("bpoc").FirstOrDefault();
+            if (cookie != null)
             {
-                db.Dispose();
+                CookieState cookieState = cookie["bpoc"];
+
+                userId = cookieState["uid"];
+                //validate token per userId
+                sessionToken = cookieState["token"];
             }
-            base.Dispose(disposing);
+            return Request.CreateResponse(HttpStatusCode.OK, sessionToken);
         }
 
-        private bool UserExists(int id)
-        {
-            return db.Users.Count(e => e.Id == id) > 0;
-        }
+        # endregion
     }
 }
