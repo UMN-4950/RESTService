@@ -125,6 +125,9 @@ namespace RESTService.Controllers
                 String name = u.GivenName + " " + u.FamilyName;
 
                 reply.Add(new Tuple<int, String, String>(u.Id, name, status));
+                var y = new UserDTO { Email = u.Email, Id = u.Id };
+                y = u.ToUserDTO();
+                return Ok(y);
             }
 
             return Ok(reply);

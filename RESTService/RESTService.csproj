@@ -137,8 +137,10 @@
       <DependentUpon>201702100348171_from the top.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Dto\UserDTO.cs" />
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\Friend.cs" />
+    <Compile Include="Models\ModelExtensions.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\RESTServiceContext.cs" />
