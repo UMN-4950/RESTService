@@ -28,9 +28,22 @@ namespace RESTService.Controllers
             int id = db.Users.Where(x => x.GoogleId == googleID).Select(s => s.Id).SingleOrDefault();
             return Ok(id);
         }
+
+        [HttpGet]
+        [Route("api/users/checklogin/{googleID}")]
+        public IHttpActionResult CheckLogin(string googleID)
+        {
+            var user = db.Users.Any(u => u.GoogleId.Equals(googleID));
+            if (!user)
+            {
+                return Content(HttpStatusCode.NotFound, "User does not exist.");
+            }
+
+            return Ok(true);
+        }
+        
         #endregion
 
-        #region other queries
 
         [Route("api/users/namesearch/{userID}/{queryString}")]
         [HttpPost]
