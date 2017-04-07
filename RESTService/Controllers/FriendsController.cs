@@ -23,6 +23,45 @@ namespace RESTService.Controllers
             return db.Friends.ToList<Friend>();
         }
 
+        [Route("api/friends/getfriendslist/{userID}/")]
+        [HttpPost]
+        public IHttpActionResult GetFriendsList(string userID)
+        {
+            // Retrieve querying user
+            User currentUser = db.Users.Where(x => x.GoogleId.Equals(userID)).Single(); // Throws an error if user not found
+
+            // Filter out friends without status "Friend"
+            IEnumerable<Friend> friends = currentUser.Friends.Where(x => x != null && x.Status.Equals("Friend"));
+
+            // Check if any registered friends
+            if (!friends.Any())
+            {
+                return Content(HttpStatusCode.BadRequest, "No friends found.");
+            }
+
+            // TODO: Add current location reference
+            // Retrieve current user's location
+
+            // Calculate distance between user and friends
+
+            // Retrieve profile picture
+
+            // Construct reply object
+            var reply = new List<Tuple<String, double, String>>(); // name, distance, id
+            foreach(Friend f in friends)
+            {
+                String name = f.User.GivenName + " " + f.User.FamilyName;
+                //double distance = distance(double lat1, double lon1, double lat2, double lon2); // TODO: Figure out utility class structure and implement
+                Random random = new Random();
+                double distance = random.NextDouble(); // Temporary
+
+                reply.Add(new Tuple<String, double, String>(name, distance, f.User.GoogleId));
+            }
+
+            // Return result
+            return Ok(reply);
+        }
+
         [Route("api/friends/distance")]
         public HttpResponseMessage GetFriendsTemp()
         {
@@ -33,8 +72,6 @@ namespace RESTService.Controllers
 
             data.Add(new { name = "Sophita", distance = 2.3, id = 3 });
             return Request.CreateResponse(HttpStatusCode.OK, data);
-
-
         }
 
         // GET: api/Friends/5
