@@ -25,7 +25,7 @@ namespace RESTService.Controllers
         public IHttpActionResult GetID(string googleID)
         {
             // Assumption: default value is 0
-            int id = db.Users.Where(x => x.GoogleId == googleID).Select(s => s.Id).SingleOrDefault();
+            int id = db.Users.Where(x => x.GoogleId == googleID).Select(s => s.Id).FirstOrDefault();
             return Ok(id);
         }
 
@@ -44,6 +44,7 @@ namespace RESTService.Controllers
         
         #endregion
 
+        #region other queries
 
         [Route("api/users/namesearch/{userID}/{queryString}")]
         [HttpPost]
