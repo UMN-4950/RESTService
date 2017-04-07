@@ -26,18 +26,18 @@ namespace RESTService.Controllers
         public IHttpActionResult GetID(string googleID)
         {
             // Assumption: default value is 0
-            int id = db.Users.Where(x => x.GoogleId == googleID).Select(s => s.Id).SingleOrDefault();
+            int id = db.Users.Where(x => x.GoogleId == googleID).Select(s => s.Id).FirstOrDefault();
             return Ok(id);
         }
 
         [HttpGet]
         [Route("api/users/checklogin/{googleID}")]
-        public async Task<IHttpActionResult> CheckLogin(string googleID)
+        public IHttpActionResult CheckLogin(string googleID)
         {
-            var user = await db.Users.Select(u => u.GoogleId.Equals(googleID)).AnyAsync();
+            var user = db.Users.Any(u => u.GoogleId.Equals(googleID));
             if (!user)
             {
-                return NotFound();
+                return Content(HttpStatusCode.NotFound, "User does not exist.");
             }
 
             return Ok(true);
