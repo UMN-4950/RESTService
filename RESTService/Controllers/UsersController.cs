@@ -146,9 +146,20 @@ namespace RESTService.Controllers
         public async Task<IHttpActionResult> GetUser(int id)
         {
             User user = await db.Users.FindAsync(id);
+            
             if (user == null)
             {
                 return NotFound();
+            }
+
+            // we just want the last location of the user
+            var userLocations = user.Locations;
+            if (userLocations.Count > 1)
+            {
+                var lastLucation = userLocations.Last();
+                userLocations.Clear();
+                userLocations.Add(lastLucation);
+                user.Locations = userLocations;
             }
 
             return Ok(user);
