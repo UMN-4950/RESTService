@@ -33,8 +33,6 @@ namespace RESTService.Controllers
 
             data.Add(new { name = "Sophita", distance = 2.3, id = 3 });
             return Request.CreateResponse(HttpStatusCode.OK, data);
-
-
         }
 
         // GET: api/Friends/5

@@ -20,6 +20,8 @@ namespace RESTService.Controllers
         private RESTServiceContext db = new RESTServiceContext();
 
         #region GoogleId-based queris
+
+        [HttpGet]
         [Route("api/users/getid/{googleID}")]
         public async Task<IHttpActionResult> GetID(string googleID)
         {
@@ -27,6 +29,20 @@ namespace RESTService.Controllers
             int id = db.Users.Where(x => x.GoogleId == googleID).Select(s => s.Id).SingleOrDefault();
             return Ok(id);
         }
+
+        [HttpGet]
+        [Route("api/users/checklogin/{googleID}")]
+        public async Task<IHttpActionResult> CheckLogin(string googleID)
+        {
+            var user = await db.Users.Select(u => u.GoogleId.Equals(googleID)).AnyAsync();
+            if (!user)
+            {
+                return NotFound();
+            }
+
+            return Ok(true);
+        }
+        
         #endregion
 
         #region Location-based queries
