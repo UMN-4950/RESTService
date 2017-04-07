@@ -23,7 +23,7 @@ namespace RESTService.Controllers
 
         [HttpGet]
         [Route("api/users/getid/{googleID}")]
-        public async Task<IHttpActionResult> GetID(string googleID)
+        public IHttpActionResult GetID(string googleID)
         {
             // Assumption: default value is 0
             int id = db.Users.Where(x => x.GoogleId == googleID).Select(s => s.Id).SingleOrDefault();
@@ -72,9 +72,10 @@ namespace RESTService.Controllers
         #region other queris
 
         [Route("api/users/namesearch/{userID}/{queryString}")]
-        public async Task<IHttpActionResult> NameSearch(int userID, string queryString)
+        [HttpPost]
+        public IHttpActionResult NameSearch(string userID, string queryString)
         {
-            //  TODO: Remove userID and instead use cookie
+            // TODO: Remove userID and instead use cookie
 
             // Split input search string and search on all passed names
             queryString = queryString.ToLower();
@@ -92,23 +93,24 @@ namespace RESTService.Controllers
 
             // Retrieve querying user's friend list
             // TODO: Only retrieve friends list of current user. How? And below error not handled
-            User currentUser = db.Users.Where(x => x.Id == userID).Single(); // Throws an error if user not found
+            User currentUser = db.Users.Where(x => x.GoogleId.Equals(userID)).Single(); // Throws an error if user not found
             List<Friend> friends = currentUser.Friends;
 
             // Iterate through results, add friend status, and then construct reply object
-            var reply = new List<Tuple<int, String, String>>(); // id, name, friendStatus
+            var reply = new List<Tuple<String, String, String>>(); // id, name, friendStatus
             foreach (User u in matches)
             {
                 // Retrieve friend status
-                String status = friends.Where(x => x.UserId == u.Id).Select(s => s.Status).SingleOrDefault();
+                String status = friends.Where(x => x.User.GoogleId.Equals(u.GoogleId)).Select(s => s.Status).SingleOrDefault();
                 if (status == null) { status = "NotFriend"; }
 
                 String name = u.GivenName + " " + u.FamilyName;
 
-                reply.Add(new Tuple<int, String, String>(u.Id, name, status));
-                var y = new UserDTO { Email = u.Email, Id = u.Id };
-                y = u.ToUserDTO();
-                return Ok(y);
+                reply.Add(new Tuple<String, String, String>(u.GoogleId, name, status));
+                // THIS IS EXAMPLE CODE FOR HOW TO TRANSFORM INTO DATA TRANSFER OBJECTS
+                //var y = new UserDTO { Email = u.Email, Id = u.Id };
+                //y = u.ToUserDTO();
+                //return Ok(y);
             }
 
             return Ok(reply);
@@ -221,6 +223,7 @@ namespace RESTService.Controllers
 
         #region COOKIE
         [Route("api/users/dropcookie/{userID}")]
+        [HttpPost]
         public HttpResponseMessage DropCookie(string userID)
         {
             //validate userId
@@ -242,6 +245,7 @@ namespace RESTService.Controllers
         }
 
         [Route("api/users/checkcookie")]
+        [HttpPost]
         public HttpResponseMessage CheckCookie()
         {
 
