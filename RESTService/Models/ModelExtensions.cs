@@ -22,12 +22,12 @@ namespace RESTService.Models
         {
             IList<UserDTO> newList = new List<UserDTO>();
 
-            foreach (User kd in users)
+            foreach (User u in users)
             {
-                UserDTO newItem = new UserDTO();
-                newItem.Id = kd.Id;
-                newItem.FamilyName = kd.FamilyName;
-                newList.Add(newItem);
+                UserDTO user = new UserDTO();
+                user.Id = u.Id;
+                user.FamilyName = u.FamilyName;
+                newList.Add(user);
             }
 
             return newList;

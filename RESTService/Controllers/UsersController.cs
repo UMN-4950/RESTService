@@ -19,8 +19,9 @@ namespace RESTService.Controllers
     {
         private RESTServiceContext db = new RESTServiceContext();
 
-        #region GoogleId-based queris
+        #region GoogleId-based queries
         [Route("api/users/getid/{googleID}")]
+        [HttpPost]
         public IHttpActionResult GetID(string googleID)
         {
             // Assumption: default value is 0
@@ -29,38 +30,12 @@ namespace RESTService.Controllers
         }
         #endregion
 
-        #region Location-based queries
-
-        [ResponseType(typeof(Location))]
-        [Route("api/users/userlocation")]
-        public async Task<IHttpActionResult> PostUserLocation(Location location)
-        {
-            //verify our in data
-            //look up user
-            //authenticated
-            //update location
-            //return status
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            if (location != null && location.UserId <= 0) return BadRequest(ModelState);
-
-            //db.Locations.Add(location);
-            return Ok();
-            // return CreatedAtRoute("DefaultApi", StatusCode.Ok);
-        }
-
-        #endregion
-
-        #region other queris
+        #region other queries
 
         [Route("api/users/namesearch/{userID}/{queryString}")]
         [HttpPost]
-        public IHttpActionResult NameSearch(string userID, string queryString)
+        public IHttpActionResult NameSearch(int userID, string queryString)
         {
-            // TODO: Remove userID and instead use cookie
-
             // Split input search string and search on all passed names
             queryString = queryString.ToLower();
             var searchTokens = queryString.Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
@@ -76,8 +51,7 @@ namespace RESTService.Controllers
             }
 
             // Retrieve querying user's friend list
-            // TODO: Only retrieve friends list of current user. How? And below error not handled
-            User currentUser = db.Users.Where(x => x.GoogleId.Equals(userID)).Single(); // Throws an error if user not found
+            User currentUser = FindUser(userID);
             List<Friend> friends = currentUser.Friends;
 
             // Iterate through results, add friend status, and then construct reply object
@@ -100,6 +74,22 @@ namespace RESTService.Controllers
             return Ok(reply);
 
             // TODO: Limit function to only return first 5, and then wait for if user requests more
+        }
+
+        // Return user object based on userID
+        public User FindUser(int userID)
+        {
+            User user;
+            try
+            {
+                user = db.Users.Where(x => x.Id == userID).Single(); // Throws an error if user not found
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return user;
         }
 
         protected override void Dispose(bool disposing)

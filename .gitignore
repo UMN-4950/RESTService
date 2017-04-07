@@ -212,3 +212,6 @@ __pycache__/
 
 #Mac OSX 
 .DS_Store
+/RESTService/Controllers/Utility
+/RESTService/Properties
+/RESTService/Resources

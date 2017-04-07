@@ -25,10 +25,11 @@ namespace RESTService.Controllers
 
         [Route("api/friends/getfriendslist/{userID}/")]
         [HttpPost]
-        public IHttpActionResult GetFriendsList(string userID)
+        public IHttpActionResult GetFriendsList(int userID)
         {
             // Retrieve querying user
-            User currentUser = db.Users.Where(x => x.GoogleId.Equals(userID)).Single(); // Throws an error if user not found
+            UsersController uc = new UsersController();
+            User currentUser = uc.FindUser(userID);
 
             // Filter out friends without status "Friend"
             IEnumerable<Friend> friends = currentUser.Friends.Where(x => x != null && x.Status.Equals("Friend"));
