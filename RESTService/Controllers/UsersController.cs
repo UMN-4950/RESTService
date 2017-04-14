@@ -41,9 +41,34 @@ namespace RESTService.Controllers
 
             return Ok(true);
         }
-        
+
         #endregion
 
+        #region Location queries
+
+        // PUT: api/Locations/5
+        [Route("api/users/UpdateLocation/{userID}")]
+        [HttpPost]
+        public IHttpActionResult UpdateLocation(int userID, Location location)
+        {
+            // Retrieve querying user
+            User currentUser = FindUser(userID);
+
+            // Check Location model
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Update location list
+            var locations = currentUser.Locations;
+            locations.Clear();
+            locations.Add(location);
+            currentUser.Locations = locations;
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+        #endregion
         #region other queries
 
         [Route("api/users/namesearch/{userID}/{queryString}")]
@@ -144,9 +169,9 @@ namespace RESTService.Controllers
             var userLocations = user.Locations;
             if (userLocations.Count > 1)
             {
-                var lastLucation = userLocations.Last();
+                var lastLocation = userLocations.Last();
                 userLocations.Clear();
-                userLocations.Add(lastLucation);
+                userLocations.Add(lastLocation);
                 user.Locations = userLocations;
             }
 
