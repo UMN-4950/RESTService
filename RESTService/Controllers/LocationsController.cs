@@ -17,6 +17,88 @@ namespace RESTService.Controllers
     {
         private RESTServiceContext db = new RESTServiceContext();
 
+        // POST: api/Locations/
+        // http://...//Locations/postloation/16/2233/4546
+        [Route("api/locations/postlocation/{id:int}/{lat}/{lon}")]
+        public IHttpActionResult UpdateUserLocation(string lat, string lon, int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var user = db.Users.FirstOrDefault(u => u.Id == id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var userId = user.Id;
+
+            var newLocation = new Location
+            {
+                Latitude = Convert.ToDouble(lat),
+                Longitude = Convert.ToDouble(lon),
+                User = user,
+                UserId = user.Id,
+                Time = DateTime.Now
+            };
+
+            var postLocation = PostLocation(newLocation);
+
+            return Ok();
+        }
+
+        // GET
+        [Route("api/locations/getall/{id:int}")]
+        public IHttpActionResult GetAllUserLocations(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = db.Users.FirstOrDefault(u => u.Id == id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user.Locations);
+        }
+
+        // GET
+        [Route("api/locations/getlast/{id:int}")]
+        public IHttpActionResult GetLastUserLocations(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = db.Users.FirstOrDefault(u => u.Id == id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var lastLocation = user.Locations.LastOrDefault();
+            if (lastLocation == null)
+            {
+                return NotFound();
+            }
+
+            var output = new
+            {
+                lat = lastLocation.Latitude,
+                lon = lastLocation.Longitude
+            };
+
+            return Ok(output);
+        }
+
         // GET: api/Locations
         public IEnumerable<Location> GetLocations()
         {
@@ -73,7 +155,7 @@ namespace RESTService.Controllers
 
         // POST: api/Locations
         [ResponseType(typeof(Location))]
-        public async Task<IHttpActionResult> PostLocation(Location location)
+        public IHttpActionResult PostLocation(Location location)
         {
             if (!ModelState.IsValid)
             {
@@ -81,7 +163,7 @@ namespace RESTService.Controllers
             }
 
             db.Locations.Add(location);
-            await db.SaveChangesAsync();
+            db.SaveChanges();
 
             return CreatedAtRoute("DefaultApi", new { id = location.Id }, location);
         }
