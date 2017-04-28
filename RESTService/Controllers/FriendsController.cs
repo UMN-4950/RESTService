@@ -110,7 +110,7 @@ namespace RESTService.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        */
+    */
 
 
         [Route("api/friends/distance")]
