@@ -16,6 +16,7 @@ namespace RESTService.Controllers
     public class FriendsController : ApiController
     {
         private RESTServiceContext db = new RESTServiceContext();
+        private UsersController uc = new UsersController();
 
         // GET: api/Friends
         public IEnumerable<Friend> GetFriends()
@@ -28,7 +29,6 @@ namespace RESTService.Controllers
         public IHttpActionResult GetFriendsList(int userID)
         {
             // Retrieve querying user
-            UsersController uc = new UsersController();
             User currentUser = uc.FindUser(userID);
 
             // Filter out friends without status "Friend"
@@ -62,6 +62,56 @@ namespace RESTService.Controllers
             // Return result
             return Ok(reply);
         }
+
+        /* If we are not using user as the default controller, uncomment and fix up
+        [Route("api/friends/AddFriend/{userID}/{friendID}")]
+        [HttpPost]
+        public IHttpActionResult AddFriend(int userID, int friendID)
+        {
+            // Retrieve querying user and new friend
+            User currentUser = uc.FindUser(userID);
+            User friend = uc.FindUser(friendID);
+
+            var newFriend = new Friend
+            {
+                Status = "Friend",
+                UserId = friendID,
+                User = friend
+            };
+
+            currentUser.Friends.Add(newFriend);
+
+
+            return StatusCode(HttpStatusCode.NoContent);
+
+        }
+
+        [Route("api/friends/RemoveFriend/{userID}/{friendID}")]
+        [HttpPost]
+        public IHttpActionResult RemoveFriend(int userID, int friendID)
+        {
+            // Retrieve querying user and friend
+
+            User currentUser = uc.FindUser(userID);
+            User friend = uc.FindUser(friendID);
+
+            // Get index of friend in list
+            int friendToBeRemoved = currentUser.Friends.FindIndex(x => x.UserId == friendID);
+
+            // If Friend object does not exist, return not found
+            if (friendToBeRemoved == -1)
+            {
+                return NotFound();
+            }
+
+            // Remove Friend
+            currentUser.Friends.RemoveAt(friendToBeRemoved);
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
+        */
+
 
         [Route("api/friends/distance")]
         public HttpResponseMessage GetFriendsTemp()

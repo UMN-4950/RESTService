@@ -12,6 +12,7 @@ using System.Web.Http.Description;
 using RESTService.Models;
 using System.Collections.Specialized;
 using System.Net.Http.Headers;
+using RESTService.Models;
 
 namespace RESTService.Controllers
 {
@@ -44,9 +45,9 @@ namespace RESTService.Controllers
 
         #endregion
 
+        // Remove this entire region if Hooman already has solution
         #region Location queries
 
-        // PUT: api/Locations/5
         [Route("api/users/UpdateLocation/{userID}")]
         [HttpPost]
         public IHttpActionResult UpdateLocation(int userID, Location location)
@@ -69,6 +70,56 @@ namespace RESTService.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
         #endregion
+
+        #region Friend queries
+
+        [Route("api/users/AddFriend/{userID}/{friendID}")]
+        [HttpPost]
+        public IHttpActionResult AddFriend(int userID, int friendID)
+        {
+            // Retrieve querying user and new friend
+            User currentUser = FindUser(userID);
+            User friend = FindUser(friendID);
+
+            var newFriend = new Friend
+            {
+                Status = "Friend",
+                UserId = friendID,
+                User = friend
+            };
+
+            currentUser.Friends.Add(newFriend);
+
+
+            return StatusCode(HttpStatusCode.NoContent);
+
+        }
+
+        [Route("api/users/RemoveFriend/{userID}/{friendID}")]
+        [HttpPost]
+        public IHttpActionResult RemoveFriend(int userID, int friendID)
+        {
+            // Retrieve querying user and friend
+            User currentUser = FindUser(userID);
+            User friend = FindUser(friendID);
+
+            // Get index of friend in list
+            int friendToBeRemoved = currentUser.Friends.FindIndex(x => x.UserId == friendID);
+
+            // If Friend object does not exist, return not found
+            if(friendToBeRemoved == -1)
+            {
+                return NotFound();
+            }
+
+            // Remove Friend
+            currentUser.Friends.RemoveAt(friendToBeRemoved);
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
+        #endregion
+
         #region other queries
 
         [Route("api/users/namesearch/{userID}/{queryString}")]
