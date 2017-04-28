@@ -63,54 +63,74 @@ namespace RESTService.Controllers
             return Ok(reply);
         }
 
-        /* If we are not using user as the default controller, uncomment and fix up
         [Route("api/friends/AddFriend/{userID}/{friendID}")]
         [HttpPost]
         public IHttpActionResult AddFriend(int userID, int friendID)
         {
-            // Retrieve querying user and new friend
+            // Retrieve querying user and check if users already friends
             User currentUser = uc.FindUser(userID);
+
+            if(currentUser.Friends.Where(x => x.UserId == friendID).SingleOrDefault() != null)
+            {
+                return Content(HttpStatusCode.Conflict, "Users already friends.");
+            }
+
+            // Update both Friends lists
             User friend = uc.FindUser(friendID);
 
-            var newFriend = new Friend
+            var newFriend1 = new Friend
             {
                 Status = "Friend",
                 UserId = friendID,
                 User = friend
             };
+            currentUser.Friends.Add(newFriend1);
 
-            currentUser.Friends.Add(newFriend);
+            var newFriend2 = new Friend
+            {
+                Status = "Friend",
+                UserId = userID,
+                User = currentUser
+            };
+            friend.Friends.Add(newFriend2);
 
+            // Update database tables
+            var postFriend1 = PostFriend(newFriend1);
+            var postFriend2 = PostFriend(newFriend2);
 
-            return StatusCode(HttpStatusCode.NoContent);
-
+            return Ok();
         }
 
         [Route("api/friends/RemoveFriend/{userID}/{friendID}")]
         [HttpPost]
         public IHttpActionResult RemoveFriend(int userID, int friendID)
         {
-            // Retrieve querying user and friend
-
+            // Retrieve querying user and check if users are indeed friends
             User currentUser = uc.FindUser(userID);
-            User friend = uc.FindUser(friendID);
-
-            // Get index of friend in list
-            int friendToBeRemoved = currentUser.Friends.FindIndex(x => x.UserId == friendID);
-
-            // If Friend object does not exist, return not found
-            if (friendToBeRemoved == -1)
+            Friend friendToBeRemoved = currentUser.Friends.Where(x => x.UserId == friendID).SingleOrDefault();
+            if (friendToBeRemoved == null)
             {
-                return NotFound();
+                return Content(HttpStatusCode.Conflict, "Users already not friends.");
             }
 
-            // Remove Friend
-            currentUser.Friends.RemoveAt(friendToBeRemoved);
+            // Double check both friend lists confirm friends
+            User friend = uc.FindUser(friendID);
+            Friend userToBeRemoved = friend.Friends.Where(x => x.UserId == userID).SingleOrDefault();
+            if (userToBeRemoved == null)
+            {
+                return Content(HttpStatusCode.Conflict, "Friendship was not mutual.");
+            }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            // Update user friend lists
+            currentUser.Friends.Remove(friendToBeRemoved);
+            friend.Friends.Remove(userToBeRemoved);
+
+            // Update database tables
+            var deleteFriend1 = DeleteFriend(friendToBeRemoved.Id);
+            var deleteFriend2 = DeleteFriend(userToBeRemoved.Id);
+
+            return Ok();
         }
-
-    */
 
 
         [Route("api/friends/distance")]
