@@ -19,8 +19,8 @@ namespace RESTService.Controllers
 
         // POST: api/Locations/
         // http://...//Locations/postloation/16/2233/4546
-        [Route("api/locations/postlocation/{id:int}/{lat}/{lon}")]
-        public IHttpActionResult UpdateUserLocation(string lat, string lon, int id)
+        [Route("api/locations/postlocation")]
+        public IHttpActionResult UpdateUserLocation([FromUri] int id, [FromUri] string lat, [FromUri] string lon)
         {
             if (!ModelState.IsValid)
             {
