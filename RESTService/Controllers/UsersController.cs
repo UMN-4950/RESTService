@@ -22,7 +22,7 @@ namespace RESTService.Controllers
 
         #region GoogleId-based queries
         [Route("api/users/getid/{googleID}")]
-        [HttpPost]
+        [HttpGet]
         public IHttpActionResult GetID(string googleID)
         {
             // Assumption: default value is 0
