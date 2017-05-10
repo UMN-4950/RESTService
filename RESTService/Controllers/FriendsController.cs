@@ -16,7 +16,6 @@ namespace RESTService.Controllers
     public class FriendsController : ApiController
     {
         private RESTServiceContext db = new RESTServiceContext();
-        private UsersController uc = new UsersController();
 
         // GET: api/Friends
         public IEnumerable<Friend> GetFriends()
@@ -29,7 +28,7 @@ namespace RESTService.Controllers
         public IHttpActionResult GetFriendsList(int userID)
         {
             // Retrieve querying user
-            User currentUser = uc.FindUser(userID);
+            User currentUser = FindUser(userID);
 
             // Filter out friends without status "Friend"
             IEnumerable<Friend> friends = currentUser.Friends.Where(x => x != null && x.Status.Equals("Friend"));
@@ -40,23 +39,27 @@ namespace RESTService.Controllers
                 return Content(HttpStatusCode.BadRequest, "No friends found.");
             }
 
-            // TODO: Add current location reference
             // Retrieve current user's location
-
-            // Calculate distance between user and friends
-
-            // Retrieve profile picture
+            Location currentUserLocation = currentUser.Locations.FirstOrDefault();
 
             // Construct reply object
-            var reply = new List<Tuple<String, double, String>>(); // name, distance, id
+            var reply = new List<Tuple<String, double, int>>(); // name, distance, id
             foreach(Friend f in friends)
             {
                 String name = f.User.GivenName + " " + f.User.FamilyName;
-                //double distance = distance(double lat1, double lon1, double lat2, double lon2); // TODO: Figure out utility class structure and implement
-                Random random = new Random();
-                double distance = random.NextDouble(); // Temporary
 
-                reply.Add(new Tuple<String, double, String>(name, distance, f.User.GoogleId));
+                // Calculate distance between user and friends
+                Location friendLocation = f.User.Locations.FirstOrDefault();
+                double distance;
+                if (currentUserLocation == null || friendLocation == null)
+                {
+                    distance = 999.9;
+                }
+                else {
+                    distance = distanceCalculation(currentUserLocation.Latitude, currentUserLocation.Longitude, friendLocation.Latitude, friendLocation.Longitude); // TODO: Figure out utility class structure and implement
+                }
+
+                reply.Add(new Tuple<String, double, int>(name, distance, f.User.Id));
             }
 
             // Return result
@@ -68,7 +71,7 @@ namespace RESTService.Controllers
         public IHttpActionResult AddFriend(int userID, int friendID)
         {
             // Retrieve querying user and check if users already friends
-            User currentUser = uc.FindUser(userID);
+            User currentUser = FindUser(userID);
 
             if(currentUser.Friends.Where(x => x.UserId == friendID).SingleOrDefault() != null)
             {
@@ -76,7 +79,7 @@ namespace RESTService.Controllers
             }
 
             // Update both Friends lists
-            User friend = uc.FindUser(friendID);
+            User friend = FindUser(friendID);
 
             var newFriend1 = new Friend
             {
@@ -106,7 +109,7 @@ namespace RESTService.Controllers
         public IHttpActionResult RemoveFriend(int userID, int friendID)
         {
             // Retrieve querying user and check if users are indeed friends
-            User currentUser = uc.FindUser(userID);
+            User currentUser = FindUser(userID);
             Friend friendToBeRemoved = currentUser.Friends.Where(x => x.UserId == friendID).SingleOrDefault();
             if (friendToBeRemoved == null)
             {
@@ -114,7 +117,7 @@ namespace RESTService.Controllers
             }
 
             // Double check both friend lists confirm friends
-            User friend = uc.FindUser(friendID);
+            User friend = FindUser(friendID);
             Friend userToBeRemoved = friend.Friends.Where(x => x.UserId == userID).SingleOrDefault();
             if (userToBeRemoved == null)
             {
@@ -236,6 +239,47 @@ namespace RESTService.Controllers
         private bool FriendExists(int id)
         {
             return db.Friends.Count(e => e.Id == id) > 0;
+        }
+
+         // Return user object based on userID
+        public User FindUser(int userID)
+        {
+            User user;
+            try
+            {
+                user = db.Users.Where(x => x.Id == userID).Single(); // Throws an error if user not found
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return user;
+        }
+
+        public double distanceCalculation(double lat1, double lon1, double lat2, double lon2)
+        {
+            double theta = lon1 - lon2;
+            double dist = Math.Sin(deg2rad(lat1)) * Math.Sin(deg2rad(lat2)) + Math.Cos(deg2rad(lat1)) * Math.Cos(deg2rad(lat2)) * Math.Cos(deg2rad(theta));
+            dist = Math.Acos(dist);
+            dist = rad2deg(dist);
+            dist = dist * 60 * 1.1515;
+
+            return (dist);
+        }
+
+        // Converts degrees to radians
+        // Used in distance calculation
+        private double deg2rad(double deg)
+        {
+            return (deg * Math.PI / 180.0);
+        }
+
+        // Converts radians to degrees
+        // Used in distance calculation
+        private double rad2deg(double rad)
+        {
+            return (rad / Math.PI * 180.0);
         }
     }
 }
